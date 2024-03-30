@@ -8,11 +8,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
 public class CopyGenBlockClass {
-    static final Path targetPath1 = Path.of("E:\\ideaproject\\PowerNukkitX\\src\\main\\java\\cn\\nukkit\\block");
-    static final Path targetPath2 = Path.of("E:\\ideaproject\\PowerNukkitX\\src\\main\\java\\cn\\nukkit\\item");
+    static final Path projectPath = Path.of("C:\\Users\\15425\\IdeaProjects\\PowerNukkitX\\src\\main\\java\\cn\\nukkit");
+    static final Path targetPath1 = projectPath.resolve("block");
+    static final Path targetPath2 = projectPath.resolve("item");
 
     public static void main(String[] args) {
-//        copyItem();
+        copyItem();
         copyBlock();
     }
 

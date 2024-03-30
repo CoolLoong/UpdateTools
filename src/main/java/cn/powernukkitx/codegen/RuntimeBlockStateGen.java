@@ -15,15 +15,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class RuntimeBlockStateGen {
     public static void main(String[] args) throws IOException {
-        File file = new File("src/main/resources/canonical_block_states.nbt");
+        File file = new File("src/main/resources/block_palette.nbt");
         InputStream stream = new FileInputStream(file);
         StringBuilder stringBuilder = new StringBuilder("# WARNING! Don't edit this file! It's automatically regenerated!");
         stringBuilder.append('\n');
 
-        try (var reader = NbtUtils.createNetworkReader(stream)) {
+        try (var reader = NbtUtils.createGZIPReader(stream)) {
             NbtMap map = (NbtMap) reader.readTag();
             var blocks = map.getList("blocks", NbtType.COMPOUND);
             int runtimeId = 0;
@@ -34,15 +36,11 @@ public class RuntimeBlockStateGen {
                     bString.append(';').append(key).append('=').append(states.get(key).toString());
                 }
                 stringBuilder.append(bString).append('\n');
-                NbtMapBuilder builder = NbtMapBuilder.from(b);
-                builder.remove("version");
-                NbtMap build = builder.build();
-                int blockHash = HashUtil.fnv1a_32_nbt(build);
-                stringBuilder.append("blockHash=").append(blockHash).append('\n');
+                stringBuilder.append("blockHash=").append(b.getInt("network_id")).append('\n');
                 stringBuilder.append("runtimeId=").append(runtimeId).append("\n\n");
                 runtimeId++;
             }
-            Path path = Path.of("target/runtime_block_states.txt");
+            Path path = Path.of("build/runtime_block_states.txt");
             Files.deleteIfExists(path);
             Files.writeString(path, stringBuilder, StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
         }
