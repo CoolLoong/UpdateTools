@@ -20,7 +20,7 @@ import java.util.HashMap;
  * PowerNukkitX Project <br>
  */
 public class BlockAttributeFileCutter {
-    static final Path OUTPUT = Path.of("./target/block_color.json");
+    static final Path OUTPUT = Path.of("./build/block_color.json");
 
     @SneakyThrows
     public static void main(String[] args) {
