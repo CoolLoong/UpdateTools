@@ -1,5 +1,5 @@
 Here are many utility classes used for updating protocols and exporting data.
-All generated files are typically located in the `build` directory.
+All generated files are typically located in the `build` or `resource` directory.
 
 # Update PNX guide:
 
