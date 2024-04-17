@@ -1,7 +1,7 @@
 Here are many utility classes used for updating protocols and exporting data.
 All generated files are typically located in the `build` directory.
 
-Update PNX guide:
+# Update PNX guide:
 
 1. we first need to update the protocol library, which simply requires copying and pasting from Cloudbrust to PNX.
 2. Then we need to update https://github.com/CloudburstMC/BlockStateUpdater to PNX's cn\nukkit\level\updater\block
