@@ -1,6 +1,23 @@
 Here are many utility classes used for updating protocols and exporting data.
 All generated files are typically located in the `build` directory.
 
+Update PNX guide:
+
+1. we first need to update the protocol library, which simply requires copying and pasting from Cloudbrust to PNX.
+2. Then we need to update https://github.com/CloudburstMC/BlockStateUpdater to PNX's cn\nukkit\level\updater\block
+3. update https://github.com/df-mc/worldupgrader/tree/master/itemupgrader/schemas to PNX's cn\nukkit\level\updater\item
+4. update resource use `DownloadResource.java` and other,For recipes, you need to use
+   either https://github.com/AllayMC/Allay/blob/master/Allay-Data/src/main/java/org/allaymc/data/RecipeExportUtil.java
+   or https://github.com/JukeboxMC/data-extractor.
+5. Remove deprecated block states and block property from the PNX code and rename block classes if there are changes in
+   block names.
+   this is a breaking change that occurs almost every version until Minecraft's bedrock version no longer modifies block
+   states.
+6. The api related to the addon may also change. If there are errors, you need to load the addon in the vanilla BDS and
+   observe the corresponding packets sent through proxypass.
+   These packets are usually `ItemComponentPacket` for custom item, `StartGamePacket#blockProperties` for custom block ,
+   and `AvailableEntityIdentifiersPacket` for custom entity.
+
 ## 1.BdsLangExport
 
 The language files related to commands used for exporting PNX from BDS.  
