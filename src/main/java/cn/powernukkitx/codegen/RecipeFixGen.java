@@ -45,7 +45,8 @@ public class RecipeFixGen {
             for (var member : recipes.asList()) {
                 JsonObject o = member.getAsJsonObject();
                 int type = o.get("type").getAsInt();
-                if (type == 0 || type == 1) {//stonecutter or crafting_table
+
+                if (type == 0 || type == 1) {//fix slab craft for stonecutter or crafting_table
                     List<JsonElement> output = o.getAsJsonArray("output").asList();
                     JsonObject block = output.get(0).getAsJsonObject();
                     if (fixForSlab.contains(block.get("id").getAsString()) && !block.has("auxValue")) {
@@ -57,6 +58,15 @@ public class RecipeFixGen {
                         }
                         block.addProperty("auxValue", slabAux(input.get("itemId").getAsString() + ":" + input.get("auxValue").getAsInt()));
                         output.set(0, block);
+                    }
+                }
+
+                if (type == 1) {//fix craft for axe
+                    List<JsonElement> output = o.getAsJsonArray("output").asList();
+                    JsonObject block = output.get(0).getAsJsonObject();
+                    JsonObject in = o.getAsJsonObject("input");
+                    if (block.get("id").getAsString().endsWith("_axe") && in.has("A") && in.has("B")) {
+                        in.addProperty("mirror", true);
                     }
                 }
             }
