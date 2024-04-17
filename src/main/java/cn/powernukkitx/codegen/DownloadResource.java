@@ -8,6 +8,8 @@ import cn.powernukkitx.codegen.util.DownloadUtil;
  * @author Cool_Loong
  */
 public class DownloadResource {
+    static String version = "1.20.72.01";
+
     public static void main(String[] args) {
         DownloadUtil.download("https://github.com/CloudburstMC/Data/raw/master/block_palette.nbt",
                 "src/main/resources/block_palette.nbt");
@@ -19,5 +21,7 @@ public class DownloadResource {
                 "src/main/resources/runtime_item_states.json");
         DownloadUtil.download("https://github.com/CloudburstMC/Data/raw/master/creative_items.json",
                 "src/main/resources/creative_items.json");
+        DownloadUtil.download("https://github.com/AllayMC/BedrockData/blob/main/%s/block_property_types.json".formatted(version),
+                "src/main/resources/block_property_types.json");
     }
 }
