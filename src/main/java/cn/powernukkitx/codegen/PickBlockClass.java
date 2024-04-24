@@ -14,8 +14,17 @@ public class PickBlockClass {
         EndWithPicker("CoralFan");
         EndWithPicker("Sapling");
         FunctionalPicker("flower", s -> switch (s) {
-            case "BlockOrangeTulip", "BlockPinkTulip", "BlockWhiteTulip", "BlockOxeyeDaisy", "BlockBlueOrchid",
-                 "BlockAzureBluet", "BlockRedTulip" -> true;
+            case "BlockOrangeTulip",
+                 "BlockPinkTulip",
+                 "BlockWhiteTulip",
+                 "BlockOxeyeDaisy",
+                 "BlockBlueOrchid",
+                 "BlockAzureBluet",
+                 "BlockPoppy",
+                 "BlockAllium",
+                 "BlockCornflower",
+                 "BlockLilyOfTheValley",
+                 "BlockRedTulip" -> true;
             default -> false;
         });
     }
