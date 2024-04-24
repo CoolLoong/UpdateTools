@@ -24,7 +24,7 @@ public class BlockPropertiesGen {
         }
         try (var reader = NbtUtils.createGZIPReader(stream)) {
             NbtMap nbtMap = (NbtMap) reader.readTag();
-            Path path = Path.of("target/block_attributes.txt");
+            Path path = Path.of("build/block_attributes.txt");
             Files.deleteIfExists(path);
             Files.writeString(path, nbtMap.toSNBT(4), StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
         }

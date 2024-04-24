@@ -1,6 +1,5 @@
 package cn.powernukkitx.codegen;
 
-import cn.powernukkitx.codegen.util.DownloadUtil;
 import cn.powernukkitx.codegen.util.Identifier;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -42,12 +41,7 @@ public class BlockIDGen {
         }
 
         File file2 = new File("src/main/resources/block_property_types.json");
-        InputStream stream2;
-        if (file2.exists()) {
-            stream2 = new FileInputStream(file2);
-        } else {
-            stream2 = DownloadUtil.downloadAsStream("https://github.com/AllayMC/BedrockData/raw/main/%s/block_property_types.json".formatted(args[0]));
-        }
+        InputStream stream2 = new FileInputStream(file2);
         try (stream2) {
             BLOCK_PROPERTY_INFO = GSON.toJsonTree(GSON.fromJson(new InputStreamReader(stream2), Map.class)).getAsJsonObject();
         } catch (IOException e) {
@@ -118,6 +112,10 @@ public class BlockIDGen {
                         return PROPERTIES;
                      }
                      
+                     public %s() {
+                         super(PROPERTIES.getDefaultState());
+                     }
+                     
                      public %s(BlockState blockstate) {
                          super(blockstate);
                      }
@@ -151,7 +149,7 @@ public class BlockIDGen {
                     builder.append(", ");
                 }
             }
-            String result = template.formatted(className, builder.toString(), className);
+            String result = template.formatted(className, builder.toString(), className, className);
             Files.writeString(path, result, StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
         }
     }

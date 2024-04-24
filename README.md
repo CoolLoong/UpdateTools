@@ -34,7 +34,7 @@ static final String TARGET = "C:\\Users\\admin\\Downloads\\bedrock-server-1.20.5
 
 then run main method
 
-## 2.BiomeGen
+## BiomeGen
 
 Download the biome files from AllayMC and generate the corresponding `BiomeID.class` for PNX. This file does not need to
 be updated frequently because biomes are not updated often.
@@ -42,7 +42,7 @@ be updated frequently because biomes are not updated often.
 ### Usage
 Run main method
 
-## 3.BlockAttributeFileCutter
+## BlockAttributeFileCutter
 
 Download the `block_attributes` files from AllayMC and generate the corresponding `block_color.json` for PNX.
 The `block_attributes` from AllayMC may not be updated promptly, as this depends on LeviLamina's update speed. However,
@@ -53,7 +53,7 @@ need to be updated as frequently.
 
 Run main method
 
-## 4.BlockIDGen
+## BlockIDGen
 
 generate the corresponding `BlockID.class` and new Block class for PNX.  
 you must be run it after `DownloadResource.java`.
@@ -62,14 +62,14 @@ you must be run it after `DownloadResource.java`.
 
 Run main method
 
-## 5.BlockPropertiesGen
+## BlockPropertiesGen
 
 unzip the `block_attributes.nbt`
 
 ### Usage
 Run main method
 
-## 6.ConstGen
+## ConstGen
 
 Convert the string exported from the protocol typeMap into constants in PNX format.
 
@@ -78,16 +78,7 @@ Convert the string exported from the protocol typeMap into constants in PNX form
 Change the string.
 then run main method
 
-## 7.CopyGenBlockClass.java
-
-Convert the string exported from the protocol typeMap into constants in PNX format.
-
-### Usage
-
-Change the string.
-then run main method
-
-## 8.DownloadResource
+## DownloadResource
 
 Updating the necessary resources requires waiting for `CloudBrust` to update, but they usually update very quickly.
 
@@ -95,7 +86,7 @@ Updating the necessary resources requires waiting for `CloudBrust` to update, bu
 
 Run main method
 
-## 9.EntityGen
+## EntityGen
 
 generate the corresponding `EntityID.class` for PNX.  
 you must be run it after `DownloadResource.java`.
@@ -104,7 +95,7 @@ you must be run it after `DownloadResource.java`.
 
 Run main method
 
-## 10.ItemGen
+## ItemGen
 
 generate the corresponding `ItemID.class` and some new Item class for PNX.  
 you must be run it after `DownloadResource.java`.
@@ -113,7 +104,7 @@ you must be run it after `DownloadResource.java`.
 
 Run main method
 
-## 11.RecipeFixGen
+## RecipeFixGen
 
 Fixing recipes because there are still some issues with recipes exported from network data, such as missing (
 damage|aux|meta) values.
@@ -122,7 +113,7 @@ damage|aux|meta) values.
 
 Run main method
 
-## 12.RuntimeBlockStateGen
+## RuntimeBlockStateGen
 
 Dump the runtime block state to a txt
 

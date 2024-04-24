@@ -61,7 +61,7 @@ public class EntityGen {
             );
         }
         var javaFile = JavaFile.builder("", codeBuilder.build()).build();
-        javaFile.writeToPath(Path.of("target"));
+        javaFile.writeToPath(Path.of("build"));
     }
 
     @SneakyThrows
@@ -74,7 +74,7 @@ public class EntityGen {
                     k.getBoolean("summonable"),
                     convertToCamelCase(identifier.path())));
         }
-        Path path = Path.of("target/entity_init_block.txt");
+        Path path = Path.of("build/entity_init_block.txt");
         Files.deleteIfExists(path);
         Files.writeString(path, String.join("\n", result), StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
     }
