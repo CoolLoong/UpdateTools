@@ -1,9 +1,6 @@
 package cn.powernukkitx.codegen;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
@@ -15,15 +12,18 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class RecipeFixGen {
     static Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setNumberToNumberStrategy(JsonReader::nextInt).setObjectToNumberStrategy(JsonReader::nextInt).create();
     static List<JsonObject> shapelessCrafting;
     static List<JsonObject> shapedCrafting;
+    static List<JsonObject> smeltingCrafting;
 
     public static void main(String[] args) {
         loadShapelessCraft();
         loadShapeCraft();
+        loadSmeltingCrafting();
 
         try (var recipe = RecipeFixGen.class.getClassLoader().getResourceAsStream("recipes.json")) {
             Map map = gson.fromJson(new InputStreamReader(recipe), Map.class);
@@ -34,51 +34,17 @@ public class RecipeFixGen {
             for (var r : recipes) {
                 JsonObject obj = r.getAsJsonObject();
                 int type = obj.get("type").getAsInt();
-                switch (type) {
-                    case 0, 5, 8 -> {
-                        String block = obj.get("block").toString();
-                        fixShapeLessRecipe(obj, block);
-                    }
-                    case 1 -> {
-                        fixShapeLessRecipe(obj);
-                    }
-                    case 3 -> {
-                        String craftingBlock = (String) recipe.get("block");
-                        Map<String, Object> resultMap = (Map<String, Object>) recipe.get("output");
-                        ItemDescriptor resultItem = parseRecipeItem(resultMap);
-                        if (resultItem == null) {
-                            yield null;
+                JsonElement jsonElement = obj.get("block");
+                if (jsonElement != null) {
+                    String block = jsonElement.getAsString();
+                    switch (type) {
+                        case 0, 5 -> fixShapeLessRecipe(obj, block);
+                        case 1 -> fixShapeRecipe(obj, block);
+                        case 3 -> fixSmeltRecipe(obj, block);
+                        default -> {
                         }
-                        Map<String, Object> inputMap = (Map<String, Object>) recipe.get("input");
-                        ItemDescriptor inputItem = parseRecipeItem(inputMap);
-                        if (inputItem == null) {
-                            yield null;
-                        }
-                        Item result = resultItem.toItem();
-                        Item input = inputItem.toItem();
-                        Recipe furnaceRecipe = switch (craftingBlock) {
-                            case "furnace" -> new FurnaceRecipe(result, input);
-                            case "blast_furnace" -> new BlastFurnaceRecipe(result, input);
-                            case "smoker" -> new SmokerRecipe(result, input);
-                            case "campfire" -> new CampfireRecipe(result, input);
-                            case "soul_campfire" -> new SoulCampfireRecipe(result, input);
-                            default -> throw new IllegalStateException("Unexpected value: " + craftingBlock);
-                        };
-                        var xp = furnaceXpConfig.getDouble(input.getId() + ":" + input.getDamage());
-                        if (xp != 0) {
-                            this.setRecipeXp(furnaceRecipe, xp);
-                        }
-                        yield furnaceRecipe;
                     }
-                    default -> throw new IllegalStateException("Unexpected value: " + recipe);
                 }
-                if (re == null) {
-                    if (type != 9) {//todo trim smithing recipe
-                        log.warn("Load recipe {} with null!", recipe.toString().substring(0, 60));
-                    }
-                    continue;
-                }
-                this.register(re);
             }
 
             Path path = Path.of("build/recipes.json");
@@ -86,6 +52,25 @@ public class RecipeFixGen {
             Files.writeString(path, gson.toJson(jsonTree), StandardCharsets.UTF_8, StandardOpenOption.CREATE);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    static void fixSmeltRecipe(JsonObject org, String block) {
+        f1:
+        for (var b : smeltingCrafting) {
+            String asString = b.get("block").getAsString();
+            JsonObject a1 = b.get("input").getAsJsonObject();
+            JsonObject a2 = org.get("input").getAsJsonObject();
+            JsonObject o1 = b.get("output").getAsJsonObject();
+            JsonObject o2 = org.get("output").getAsJsonObject();
+            if (asString.equals(block)) {
+                if (setSmeltingAux(a1, a2)) {
+                    continue f1;
+                }
+                if (setSmeltingAux(o1, o2)) {
+                    continue f1;
+                }
+            }
         }
     }
 
@@ -110,14 +95,14 @@ public class RecipeFixGen {
 
     static void fixShapeRecipe(JsonObject org, String block) {
         f1:
-        for (var b : shapelessCrafting) {
+        for (var b : shapedCrafting) {
             String asString = b.get("block").getAsString();
             JsonObject a1 = b.get("input").getAsJsonObject();
             JsonObject a2 = org.get("input").getAsJsonObject();
             JsonArray o1 = b.get("output").getAsJsonArray();
             JsonArray o2 = org.get("output").getAsJsonArray();
             if (asString.equals(block) && a1.size() == a2.size() && o1.size() == o2.size()) {
-                if (setShapeLessAux(a1, a2)) {
+                if (setShapeAux(a1, a2)) {
                     continue f1;
                 }
                 if (setShapeLessAux(o1, o2)) {
@@ -127,21 +112,63 @@ public class RecipeFixGen {
         }
     }
 
-    private static boolean setShapeAux(JsonObject array1, JsonObject array2) {
-        for(var e : array1.entrySet()){
-            for(var e2: array2.entrySet()){
-                String id1 = e.getValue().getAsJsonObject().get("name").getAsString();
-                String id2 = e2.getValue().getAsJsonObject().get("itemId").getAsString();
-                if (id1.equals(id2)){
-                    JsonObject obj1 = e.getValue().getAsJsonObject();
-                    JsonObject obj2 = e2.getValue().getAsJsonObject();
-                    if (obj1.asMap().containsKey("meta")) {
-                        obj2.addProperty("auxValue", asJsonObject1.get("meta").getAsNumber());
-                    }
-                    array2.set(i, asJsonObject);
-                }
-                else {
+    private static String getElementId(JsonObject element) {
+        JsonElement jsonElement = element.get("itemId");
+        if (jsonElement == null) {
+            jsonElement = element.get("name");
+        }
+        if (jsonElement == null) {
+            jsonElement = element.get("id");
+        }
+        return Optional.ofNullable(jsonElement).map(JsonElement::getAsString).orElse(null);
+    }
 
+    private static boolean setSmeltingAux(JsonObject array1, JsonObject array2) {
+        for (var e : array1.entrySet()) {
+            JsonElement jsonElement = array1.get(e.getKey());
+            if (jsonElement != null) {
+                JsonObject o1 = e.getValue().getAsJsonObject();
+                if (o1.get("tag") != null) return true;
+                JsonObject o2 = jsonElement.getAsJsonObject();
+                String id1 = o1.getAsJsonObject().get("name").getAsString();
+                String id2 = getElementId(o2.getAsJsonObject());
+                if (id2 == null) return true;
+                if (!id1.equals(id2)) {
+                    return true;
+                } else {
+                    if (o1.asMap().containsKey("meta")) {
+                        o2.addProperty("auxValue", o1.get("meta").getAsNumber());
+                    }
+                    if (o1.asMap().containsKey("block_states")) {
+                        o2.addProperty("block_states", o1.get("block_states").getAsString());
+                    }
+                    array2.add(e.getKey(), o2);
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean setShapeAux(JsonObject array1, JsonObject array2) {
+        for (var e : array1.entrySet()) {
+            JsonElement jsonElement = array1.get(e.getKey());
+            if (jsonElement != null) {
+                JsonObject o1 = e.getValue().getAsJsonObject();
+                if (o1.get("tag") != null) return true;
+                JsonObject o2 = jsonElement.getAsJsonObject();
+                String id1 = o1.getAsJsonObject().get("name").getAsString();
+                String id2 = getElementId(o2.getAsJsonObject());
+                if (id2 == null) return true;
+                if (!id1.equals(id2)) {
+                    return true;
+                } else {
+                    if (o1.asMap().containsKey("meta")) {
+                        o2.addProperty("auxValue", o1.get("meta").getAsNumber());
+                    }
+                    if (o1.asMap().containsKey("block_states")) {
+                        o2.addProperty("block_states", o1.get("block_states").getAsString());
+                    }
+                    array2.add(e.getKey(), o2);
                 }
             }
         }
@@ -150,14 +177,19 @@ public class RecipeFixGen {
 
     private static boolean setShapeLessAux(JsonArray array1, JsonArray array2) {
         for (int i = 0; i < array1.size(); i++) {
+            if (array1.get(i).getAsJsonObject().get("tag") != null) return true;
             String id1 = array1.get(i).getAsJsonObject().get("name").getAsString();
-            String id2 = array2.get(i).getAsJsonObject().get("itemId").getAsString();
+            String id2 = getElementId(array2.get(i).getAsJsonObject());
+            if (id2 == null) return true;
             if (!id1.equals(id2)) return true;
             else {
                 JsonObject asJsonObject = array2.get(i).getAsJsonObject();
                 JsonObject asJsonObject1 = array1.get(i).getAsJsonObject();
                 if (asJsonObject1.asMap().containsKey("meta")) {
                     asJsonObject.addProperty("auxValue", asJsonObject1.get("meta").getAsNumber());
+                }
+                if (asJsonObject1.asMap().containsKey("block_states")) {
+                    asJsonObject.addProperty("block_states", asJsonObject1.get("block_states").getAsString());
                 }
                 array2.set(i, asJsonObject);
             }
@@ -179,6 +211,16 @@ public class RecipeFixGen {
         try (var recipe = RecipeFixGen.class.getClassLoader().getResourceAsStream("vanilla_recipes/shaped_crafting.json")) {
             assert recipe != null;
             shapedCrafting = gson.fromJson(new InputStreamReader(recipe), new TypeToken<List<JsonObject>>() {
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static void loadSmeltingCrafting() {
+        try (var recipe = RecipeFixGen.class.getClassLoader().getResourceAsStream("vanilla_recipes/smelting.json")) {
+            assert recipe != null;
+            smeltingCrafting = gson.fromJson(new InputStreamReader(recipe), new TypeToken<List<JsonObject>>() {
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
