@@ -67,9 +67,11 @@ public class RecipeFixGen {
                 if (setSmeltingAux(a1, a2)) {
                     continue f1;
                 }
+                org.add("input", a2);
                 if (setSmeltingAux(o1, o2)) {
                     continue f1;
                 }
+                org.add("output", o2);
             }
         }
     }
@@ -124,26 +126,18 @@ public class RecipeFixGen {
     }
 
     private static boolean setSmeltingAux(JsonObject array1, JsonObject array2) {
-        for (var e : array1.entrySet()) {
-            JsonElement jsonElement = array1.get(e.getKey());
-            if (jsonElement != null) {
-                JsonObject o1 = e.getValue().getAsJsonObject();
-                if (o1.get("tag") != null) return true;
-                JsonObject o2 = jsonElement.getAsJsonObject();
-                String id1 = o1.getAsJsonObject().get("name").getAsString();
-                String id2 = getElementId(o2.getAsJsonObject());
-                if (id2 == null) return true;
-                if (!id1.equals(id2)) {
-                    return true;
-                } else {
-                    if (o1.asMap().containsKey("meta")) {
-                        o2.addProperty("auxValue", o1.get("meta").getAsNumber());
-                    }
-                    if (o1.asMap().containsKey("block_states")) {
-                        o2.addProperty("block_states", o1.get("block_states").getAsString());
-                    }
-                    array2.add(e.getKey(), o2);
-                }
+        String id1 = array1.getAsJsonObject().get("name").getAsString();
+        String id2 = getElementId(array2.getAsJsonObject());
+        if (id2 == null) return true;
+        if (!id1.equals(id2)) {
+            return true;
+        } else {
+            if (array1.asMap().containsKey("meta") && array2.asMap().containsKey("damage")) {
+                array2.addProperty("damage", array1.get("meta").getAsNumber());
+            }
+
+            if (array1.asMap().containsKey("block_states")) {
+                array2.addProperty("block_states", array1.get("block_states").getAsString());
             }
         }
         return false;
@@ -151,7 +145,7 @@ public class RecipeFixGen {
 
     private static boolean setShapeAux(JsonObject array1, JsonObject array2) {
         for (var e : array1.entrySet()) {
-            JsonElement jsonElement = array1.get(e.getKey());
+            JsonElement jsonElement = array2.get(e.getKey());
             if (jsonElement != null) {
                 JsonObject o1 = e.getValue().getAsJsonObject();
                 if (o1.get("tag") != null) return true;
@@ -162,7 +156,7 @@ public class RecipeFixGen {
                 if (!id1.equals(id2)) {
                     return true;
                 } else {
-                    if (o1.asMap().containsKey("meta")) {
+                    if (o1.asMap().containsKey("meta") && array2.asMap().containsKey("auxValue")) {
                         o2.addProperty("auxValue", o1.get("meta").getAsNumber());
                     }
                     if (o1.asMap().containsKey("block_states")) {
@@ -185,7 +179,7 @@ public class RecipeFixGen {
             else {
                 JsonObject asJsonObject = array2.get(i).getAsJsonObject();
                 JsonObject asJsonObject1 = array1.get(i).getAsJsonObject();
-                if (asJsonObject1.asMap().containsKey("meta")) {
+                if (asJsonObject1.asMap().containsKey("meta") && asJsonObject.asMap().containsKey("auxValue")) {
                     asJsonObject.addProperty("auxValue", asJsonObject1.get("meta").getAsNumber());
                 }
                 if (asJsonObject1.asMap().containsKey("block_states")) {
