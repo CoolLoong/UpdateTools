@@ -81,7 +81,7 @@ Select class files that match the pattern from the batch-generated block classes
 #### usage:
 Run main method
 
-## PropertyTypeDataDumper.java
+## PropertyTypeDataDumper
 Used to export the `block_property_types.json` file. This file is a requisite for run `BlockIDGen`.
 #### usage:
 Use `DownloadResouce` to update `block_palette.nbt`
