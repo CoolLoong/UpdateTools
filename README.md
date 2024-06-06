@@ -20,7 +20,7 @@ All generated files are typically located in the `build` or `resource` directory
 ## BdsLangExport
 The language files related to commands used for exporting PNX from BDS.  
 After the export is completed, you still need to manually copy the language files into the PNX.
-### Usage
+#### usage:
 Download BDS from https://www.minecraft.net/en-us/download/server/bedrock ,update the path to your BDS folder
 ```java
 cn/powernukkitx/codegen/BdsLangExport.java:21
@@ -31,7 +31,7 @@ then run main method
 ## BiomeGen
 Download the biome files from AllayMC and generate the corresponding `BiomeID.class` for PNX. This file does not need to
 be updated frequently because biomes are not updated often.
-### Usage
+#### usage:
 Run main method
 
 ## BlockAttributeFileCutter
@@ -39,55 +39,55 @@ Download the `block_attributes` files from AllayMC and generate the correspondin
 The `block_attributes` from AllayMC may not be updated promptly, as this depends on LeviLamina's update speed. However,
 it's not critical because this file is not the most important; it only affects the color filling of the map and doesn't
 need to be updated as frequently.
-### Usage
+#### usage:
 Run main method
 
 ## BlockIDGen
 generate the corresponding `BlockID.class` and new Block class for PNX.  
 you must be run it after `DownloadResource.java`.
-### Usage
+#### usage:
 Run main method
 
 ## BlockPropertiesGen
 unzip the `block_attributes.nbt`
-### Usage
+#### usage:
 Run main method
 
 ## ConstGen
 Convert the string exported from the protocol typeMap into constants in PNX format.
-### Usage
+#### usage:
 Change the string.
 then run main method
 
 ## DownloadResource
 Updating the necessary resources requires waiting for `CloudBurst/Data` to update, but they usually update very quickly.
-### Usage
+#### usage:
 Run main method
 
 ## EntityGen
 generate the corresponding `EntityID.class` for PNX.  
 you must be run it after `DownloadResource.java`.
-### Usage
+#### usage:
 Run main method
 
 ## ItemGen
 generate the corresponding `ItemID.class` and some new Item class for PNX.  
 you must be run it after `DownloadResource.java`.
-### Usage
+#### usage:
 Run main method
 
 ## PickBlockClass
 Select class files that match the pattern from the batch-generated block classes
-### Usage
+#### usage:
 Run main method
 
 ## RecipeFixGen
 Fixing recipes because there are still some issues with recipes exported from network data, such as missing (
 damage|aux|meta) values.
-### Usage
+#### usage:
 Run main method
 
 ## RuntimeBlockStateGen
 Dump the block palette to a txt
-### Usage
+#### usage:
 Run main method
