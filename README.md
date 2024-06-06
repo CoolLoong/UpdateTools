@@ -3,8 +3,8 @@ All generated files are typically located in the `build` or `resource` directory
 
 # Update PNX guide:
 1. we first need to update the protocol library, which simply requires copying and pasting from Cloudbrust to PNX.
-2. Then we need to update https://github.com/CloudburstMC/BlockStateUpdater to PNX's cn\nukkit\level\updater\block
-3. update https://github.com/df-mc/worldupgrader/tree/master/itemupgrader/schemas to PNX's cn\nukkit\level\updater\item
+2. Then we need to update https://github.com/CloudburstMC/BlockStateUpdater to PNX's `cn\nukkit\level\updater\block`
+3. update https://github.com/df-mc/worldupgrader/tree/master/itemupgrader/schemas to PNX's `cn\nukkit\level\updater\item`
 4. update resource use `DownloadResource.java` and other,For recipes, you need to use
    either https://github.com/AllayMC/Allay/blob/master/Allay-Data/src/main/java/org/allaymc/data/RecipeExportUtil.java
    or https://github.com/JukeboxMC/data-extractor.
