@@ -49,7 +49,9 @@ public class RecipeFixGen {
 
             Path path = Path.of("build/recipes.json");
             Files.deleteIfExists(path);
-            Files.writeString(path, gson.toJson(jsonTree), StandardCharsets.UTF_8, StandardOpenOption.CREATE);
+            String json = gson.toJson(jsonTree);
+            Files.writeString(path,json , StandardCharsets.UTF_8, StandardOpenOption.CREATE);
+            Files.writeString(Path.of("src/main/resources/recipes.json"), json, StandardCharsets.UTF_8, StandardOpenOption.WRITE);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
