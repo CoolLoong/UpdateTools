@@ -87,11 +87,8 @@ Used to export the `block_property_types.json` file. This file is a requisite fo
 Use `DownloadResouce` to update `block_palette.nbt`
 Run main method
 
-## RecipeFixGen
-Fixing recipes because there are still some issues with recipes exported from network data, such as missing (
-damage|aux|meta) values.
-#### usage:
-Run main method
+## Recipe
+refer https://github.com/CoolLoong/data-extractor
 
 ## RuntimeBlockStateGen
 Dump the block palette to a txt
